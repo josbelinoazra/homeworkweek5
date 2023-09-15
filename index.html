@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Registrasi dan List Pendaftar</title>
+  <!-- Include CSS framework (e.g., Bootstrap) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.9.3/css/bulma.min.css">
+  <style>
+    /* Add custom styles here */
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+    <div class="container">
+        <div class="tabs">
+          <ul>
+            <li onclick="toggleTab('registrasi')"> <a>Registrasi</a> </li>
+            <li onclick="toggleTab('list-pendaftar')"> <a>List Pendaftar</a> </li>
+          </ul>
+        </div>
+         <!-- Tab 1: Registrasi -->
+        <div id="registrasi" class="tab-content active">
+          <b>Form Registrasi</b>
+          <br>
+          <form id="registrationForm">
+            <div class="form-group">
+              <label class="label">Nama (Minimal 10 karakter):</label>
+              <div class="control">
+                <input class="input" type="text" class="form-control" id="nama" minlength="10" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="label">Umur (Minimal 25 tahun):</label>
+              <div class="control">
+                <input class="input"  type="number", class="form-control" id="umur" min="25" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="label">Uang Saku (Minimal 100 ribu - Maksimal 1 juta):</label>
+              <div class="control">
+                <input class="input" type="number" class="form-control" id="uangSangu" min="100000" max="1000000" required>
+              </div>
+            </div>
+            <br>
+            <button class="button is-primary" type="submit">Submit</button>
+          </form>
+        </div>
+
+    <!-- Tab 2: List Pendaftar -->
+    <div id="list-pendaftar" class="tab-content">
+      <b>List Pendaftar</b>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Nama</th>
+            <th>Umur</th>
+            <th>Uang Saku</th>
+          </tr>
+        </thead>
+        <tbody id="pendaftarTable">
+        <p>Rata rata pendaftar memiliki uang saku sebesar <span id="rataUangSaku"></span> dengan rata-rata umur <span id="rataUmur"></span>.</p>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  
+
+  <!-- Include JavaScript libraries (e.g., Bootstrap, jQuery) -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  <script>
+
+    // Berfungsi untuk berpindah tab
+    function toggleTab(tabId) {
+      const tabs = document.querySelectorAll('.tab-content');
+      tabs.forEach(tab => {
+        tab.classList.remove('active');
+      });
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    // Implementasikan konsep OOP dan asinkron di sini
+    // Example: menggunakan kelas JavaScript untuk menangani registrasi dan menampilkan data
+    class Registrasi {
+      constructor(nama, umur, uangSaku) {
+        this.nama = nama;
+        this.umur = umur;
+        this.uangSaku = uangSaku;
+      }
+    }
+
+    class PendaftarList {
+      constructor() {
+        this.pendaftar = [];
+      }
+
+      addPendaftar(registrasi) {
+        this.pendaftar.push(registrasi);
+      }
+
+      calculateAverage() {
+        let totalUangSaku = 0;
+        let totalUmur = 0;
+
+        this.pendaftar.forEach((pendaftar) => {
+          totalUangSaku += pendaftar.uangSaku;
+          totalUmur += pendaftar.umur;
+        });
+
+        const averageUangSaku = totalUangSaku / this.pendaftar.length;
+        const averageUmur = totalUmur / this.pendaftar.length;
+
+        document.getElementById('rataUangSaku').innerText = averageUangSaku.toFixed(2);
+        document.getElementById('rataUmur').innerText = averageUmur.toFixed(2);
+      }
+
+      displayPendaftar() {
+        const pendaftarTable = document.getElementById('pendaftarTable');
+        pendaftarTable.innerHTML = '';
+
+        this.pendaftar.forEach((pendaftar, index) => {
+          const row = pendaftarTable.insertRow(index);
+          const cellNama = row.insertCell(0);
+          const cellUmur = row.insertCell(1);
+          const cellUangSaku = row.insertCell(2);
+
+          cellNama.innerText = pendaftar.nama;
+          cellUmur.innerText = pendaftar.umur;
+          cellUangSaku.innerText = pendaftar.uangSaku;
+        });
+      }
+    }
+
+    document.getElementById('registrationForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+
+      const nama = document.getElementById('nama').value;
+      const umur = parseInt(document.getElementById('umur').value);
+      const uangSaku = parseInt(document.getElementById('uangSangu').value);
+
+      // Check if the input meets the criteria
+      if (nama.length < 10 || umur < 25 || uangSaku < 100000 || uangSaku > 1000000) {
+        alert('Data tidak memenuhi kriteria.');
+        return;
+      }
+
+      const registrasi = new Registrasi(nama, umur, uangSaku);
+      pendaftarList.addPendaftar(registrasi);
+
+      // Update the table and averages
+      pendaftarList.displayPendaftar();
+      pendaftarList.calculateAverage();
+    });
+
+    const pendaftarList = new PendaftarList();  // Initialize the PendaftarList instance
+  </script>
+</body>
+</html>
